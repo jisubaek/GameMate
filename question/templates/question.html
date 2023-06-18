@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GameMate</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'question/css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
+
+</head>
+<body>
+
+<!--#6a87ae-->
+
+<div class = "question">
+    <form id="recommendationForm" method="POST">
+    {% csrf_token %}
+    <div class="question-container" data-question-id="1">
+        <p>질문 1: 플레이인원 및 연결방식은 어떤게 좋으신가요?</p>
+        <input type="radio" name="question1" value="싱글플레이어" required> 싱글플레이어<br>
+        <input type="radio" name="question1" value="로컬협동"> 로컬협동<br>
+        <input type="radio" name="question1" value="파티"> 파티<br>
+        <input type="radio" name="question1" value="온라인협동"> 온라인협동<br>
+        <button type="button" class="next-question">다음</button>
+    </div>
+    <div class="question-container" data-question-id="2">
+        <p>질문 2: 플레이 방식은 어떤 것이 좋으신가요?</p>
+        <input type="radio" name="question2" value="롤플레잉" required> 롤플레잉<br>
+        <input type="radio" name="question2" value="어드벤쳐"> 어드벤쳐<br>
+        <input type="radio" name="question2" value="FPS"> FPS<br>
+        <input type="radio" name="question2" value="RPG"> RPG<br>
+        <input type="radio" name="question2" value="퍼즐"> 퍼즐<br>
+        <input type="radio" name="question2" value="MOBA"> MOBA<br>
+        <button type="button" class="next-question">다음</button>
+    </div>
+
+
+    <div class="result-container" style="display: none;">
+        <h3>추천 게임:</h3>
+        <ul id="recommendationList">
+            <!-- 추천 게임 리스트를 동적으로 추가할 예정 -->
+        </ul>
+    </div>
+</form>
+</div>
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+    <script>
+      $(document).ready(function() {
+        var questionIndex = 1;
+        var questionCount = $('.question-container').length;
+
+        showQuestion(questionIndex);
+
+        function showQuestion(index) {
+          $('.question-container').hide();
+          $('[data-question-id="' + index + '"]').show();
+        }
+
+        function showNextQuestion() {
+          questionIndex++;
+          if (questionIndex < questionCount+1) {
+            showQuestion(questionIndex);
+          } else {
+            showRecommendations();
+          }
+        }
+
+        function showRecommendations() {
+          var form = $("#recommendationForm");
+          var url = form.attr('action');
+          var formData = form.serialize();
+
+          $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function(response) {
+              var recommendationList = $("#recommendationList");
+              recommendationList.empty();
+
+              $.each(response.games, function(index, game) {
+                var listItem = $("<li>").text(game.name);
+                recommendationList.append(listItem);
+              });
+
+              $(".result-container").show();
+            },
+            error: function(error) {
+              console.log(error);
+            }
+          });
+        }
+
+        $(".next-question").click(function() {
+          showNextQuestion();
+        });
+      });
+    </script>
+
+
+</body>
+</html>
