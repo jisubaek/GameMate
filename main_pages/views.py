@@ -1,20 +1,21 @@
 from unicodedata import category
 
 from .forms import CommentForm
-from .models import Post, Category, Tag
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from .models import Post
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content', 'head_image', 'file_upload']
+
 
 
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content', 'head_image', 'file_upload']
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -23,7 +24,17 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         current_user = self.request.user
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
             form.instance.author = current_user
-            return super(PostCreate, self).form_valid(form)
+            tags = self.request.POST.getlist('tags')
+
+            # 해시태그 추가
+            for tag in tags:
+                tag = tag.strip()
+                if tag.startswith('#'):
+                    tag = tag[1:]  # 해시태그 기호(#) 제거
+                if tag != '':
+                    form.instance.tags.add(tag)
+
+            return super().form_valid(form)
         else:
             return redirect('/main_pages/')
 
@@ -34,8 +45,7 @@ class PostList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data()
-        context['categories'] = Category.objects.all()
-        context['no_category_count'] = Post.objects.filter(category=None).count()
+        # context['no_Hashtag_count'] = Post.objects.filter(category=None).count()
         return context
 
 
@@ -44,40 +54,45 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data()
-        context['categories'] = Category.objects.all()
-        context['no_category_count'] = Post.objects.filter(category=None).count()
+        # context['no_Hashtag_count'] = Post.objects.filter(category=None).count()
         context['comment_form'] = CommentForm
         return context
 
 
-def categories_page(request, slug):
-    if slug == 'no-category':
-        category = '미분류'
-        post_list = Post.objects.filter(category=None)
-    else:
-        category = Category.objects.get(slug=slug)
-        post_list = Post.objects.filter(category=category)
+# def categories_page(request, slug):
+#     if slug == 'no-category':
+#         category = '미분류'
+#         post_list = Post.objects.filter(category=None)
+#     else:
+#         category = Category.objects.get(slug=slug)
+#         post_list = Post.objects.filter(category=category)
+#
+#     context = {
+#         'category': category,
+#         'categories': Category.objects.all(),
+#         'post_list': post_list,
+#         'no_category_count': Post.objects.filter(category=None).count()
+#     }
+#     return render(request, 'main_pages/post_list.html', context)
 
-    context = {
-        'category': category,
-        'categories': Category.objects.all(),
-        'post_list': post_list,
-        'no_category_count': Post.objects.filter(category=None).count()
-    }
-    return render(request, 'main_pages/post_list.html', context)
 
+# tag_cloud_view.html을 보여주겠다.
+class TagCloudTV(TemplateView):
+    template_name = 'taggit/tag_cloud_view.html'
 
-def tag_page(request, slug):
-    tag = Tag.objects.get(slug=slug)
-    post_list = tag.post_set.all()
+# 태그가 있으면 태그를 보여주겠다.
+class TaggedObjectLV(ListView):
+    template_name = 'taggit/tag_with_post.html'
+    model = Post
 
-    context = {
-        'tag': tag,
-        'categories': Category.objects.all(),
-        'post_list': post_list,
-        'no_category_count': Post.objects.filter(category=None).count()
-    }
-    return render(request, 'main_pages/post_list.html', context)
+    def get_queryset(self):
+        return Post.objects.filter(tags__name=self.kwargs.get('tag'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tagname'] = self.kwargs['tag']
+        return context
+
 
 
 def add_comment(request, pk):

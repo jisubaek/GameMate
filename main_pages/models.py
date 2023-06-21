@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdown
+from taggit.managers import TaggableManager
+
 
 
 class Tag(models.Model):
@@ -13,26 +15,15 @@ class Tag(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return f'/blog/tag/{self.slug}/'
+        return f'/main_pages/tag/{self.slug}/'
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = 'Categories'
-
-    def get_absolute_url(self):
-        return f'/blog/category/{self.slug}/'
 
 
 class Post(models.Model):
     title = models.CharField(max_length=30)
     content = MarkdownxField()
+    tags = TaggableManager(blank=True)  # 추가
 
     head_image = models.ImageField(upload_to='blog/images/%y/%m/%d/', blank=True)
     file_upload = models.FileField(upload_to='blog/files/%y/%m/%d/', blank=True)
@@ -41,14 +32,12 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     author = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
-    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return f'[{self.pk}]{self.title}'
 
     def get_absolute_url(self):
-        return f'/blog/{self.pk}/'
+        return f'/main_pages/{self.pk}/'
 
     def get_file_name(self):
         return os.path.basename(self.file_upload.name)
@@ -69,3 +58,6 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return f'{self.post.get_absolute_url()}#comment-{self.pk}'
+
+
+

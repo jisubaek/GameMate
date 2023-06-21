@@ -22,7 +22,9 @@
         <input type="radio" name="question1" value="로컬협동"> 로컬협동<br>
         <input type="radio" name="question1" value="파티"> 파티<br>
         <input type="radio" name="question1" value="온라인협동"> 온라인협동<br>
-        <button type="button" class="next-question">다음</button>
+        <div class="next-q">
+            <button type="button" class="next-question">다음</button>
+        </div>
     </div>
     <div class="question-container" data-question-id="2">
         <p>질문 2: 플레이 방식은 어떤 것이 좋으신가요?</p>
@@ -32,15 +34,24 @@
         <input type="radio" name="question2" value="RPG"> RPG<br>
         <input type="radio" name="question2" value="퍼즐"> 퍼즐<br>
         <input type="radio" name="question2" value="MOBA"> MOBA<br>
-        <button type="button" class="next-question">다음</button>
+        <div class="next-q">
+            <button type="button" class="next-question">다음</button>
+        </div>
     </div>
 
 
     <div class="result-container" style="display: none;">
-        <h3>추천 게임:</h3>
-        <ul id="recommendationList">
+        <div id="commentContainer"></div>
+
+        <div id="recommendation" >
+            <h3>추천 게임:</h3>
+            <ul id="recommendationList">
             <!-- 추천 게임 리스트를 동적으로 추가할 예정 -->
         </ul>
+        </div>
+        <div class = "gotocollect">
+            <a href="/main_pages/" class="btn_col">컬렉션 구경하러 가기</a>
+        </div>
     </div>
 </form>
 </div>
@@ -77,14 +88,19 @@
             url: url,
             data: formData,
             success: function(response) {
+              var commentContainer = $("#commentContainer");
               var recommendationList = $("#recommendationList");
+              commentContainer.empty();
               recommendationList.empty();
 
               $.each(response.games, function(index, game) {
-                var listItem = $("<li>").text(game.name);
+                var comment = $("<p>").text(game.comment);
+                commentContainer.append(comment);
+
+                var listItem = $("<li>").text(game.title1 + ", " + game.title2 + ", " + game.title3);
                 recommendationList.append(listItem);
               });
-
+              $(".question-container").hide();
               $(".result-container").show();
             },
             error: function(error) {

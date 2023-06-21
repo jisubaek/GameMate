@@ -33,21 +33,72 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
+  color:white;
+  font-size: 37px;
+  line-height:110%;
+}
+.next-q{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+.gotocollect{
+  display:flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn {
+.btn_col {
+  border-color: white;
+  text-align: center
   display: inline-block;
   padding: 28px 187px;
   text-decoration: none;
-  border: 2px solid #6a87ae;
-  font-size: 55px;
+  font-size: 30px;
   color: white;
 
 }
 
-.btn:hover {
+.btn_col:hover {
+  text-align: center
   border-color: white;
   background-color: white;
+  font-size: 30px;
+  color: black;
+  font-weight:bold;
+}
+
+.result-container {
+  display: flex;
+  max-width: 58vw;
+  flex-direction: column;
+}
+.commentContainer{
+  display: flex;
+}
+
+.recommendation{
+  display: flex;
+  max-width: 58vw;
+}
+
+.next-question{
+  border-color: white;
+  background:transparent;
+  text-align: center
+  display: inline-block;
+  padding: 28px 187px;
+  text-decoration: none;
+  font-size: 30px;
+  color: white;
+}
+
+.next-question:hover {
+  text-align: center
+  border-color: white;
+  background-color: white;
+  font-size: 30px;
   color: black;
   font-weight:bold;
 }

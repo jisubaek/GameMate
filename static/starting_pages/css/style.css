@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'DungGeunMoFont';
+    src: url('/static/fonts/DungGeunMo.ttf') format('truetype');
+    /* 추가적인 글꼴 스타일 설정 */
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+    font-family: 'DungGeunMoFont', sans-serif;
+    font-size: 28px ;
+    background-image: url("/static/images/gamematebg.png");
+    background-size: auto 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100&;
+    min-width: 100%;
+
+    margin: 0;
+    padding: 0;
+    height:100%
+    width:100%
+
+    /* 기본 글꼴 설정 */
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+.gamereco {
+  position: fixed;
+  top: 38.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.gamefind {
+  position: fixed;
+  top: 62.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.btn_rec {
+  display: inline-block;
+  padding: 30px 189px;
+  text-decoration: none;
+  font-size: 55px;
+  color: white;
+
+}
+
+.btn_rec:hover {
+  border-color: white;
+  background-color: white;
+  color: black;
+  font-weight:bold;
+}
+
+.btn_col {
+  display: inline-block;
+  padding: 30px 161px;
+  text-decoration: none;
+  font-size: 55px;
+  color: white;
+
+}
+
+.btn_col:hover {
+  border-color: white;
+  background-color: white;
+  color: black;
+  font-weight:bold;
+}

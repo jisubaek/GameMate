@@ -23,5 +23,7 @@ urlpatterns = [
     path('', include('starting_pages.urls')),
     path('question/', include('question.urls')),
     path('main_pages/', include('main_pages.urls')),
+    path('markdownx/', include('markdownx.urls')),
+    path('accounts/', include('allauth.urls')),
 
 ]

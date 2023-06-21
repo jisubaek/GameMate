@@ -4,6 +4,7 @@
 <head>
     <title>Collections</title>
         <link rel="stylesheet" href="{% static 'main_pages/bootstrap/bootstrap.min.css' %}" media="screen">
+        <link rel="stylesheet" href="{% static 'main_pages/css/main_pages.css' %}" media="screen">
 
     <script src="https://kit.fontawesome.com/726bbd6862.js" crossorigin="anonymous"></script>
 </head>
@@ -27,27 +28,6 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-secondary" type="button">Go!</button>
                             </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Categories Widget -->
-                <div class="card my-4">
-                    <h5 class="card-header">Categories</h5>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <ul class="list-unstyled mb-0">
-                                    {% for category in categories %}
-                                        <li>
-                                            <a href="{{category.get_absolute_url}}">{{ category.name }}</a>
-                                        </li>
-                                    {% endfor %}
-                                        <li>
-                                            <a href="/blog/category/no-category">미분류({{ no_category_count }})</a>
-                                        </li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>

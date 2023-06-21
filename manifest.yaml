@@ -1,0 +1,13 @@
+
+---
+applications:
+- name: gamemate
+  buildpack: paketo-buildpacks/python
+  memory: 256M
+  instances: 1
+  command: waitress-serve --port=8080 GameMate.wsgi:application
+#
+#- name: blog
+#  memory: 512M
+#  instances: 1
+#  buildpack: paketo-buildpacks/python
